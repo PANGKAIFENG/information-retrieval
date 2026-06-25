@@ -107,6 +107,8 @@ Provide EACH text field in BOTH English and Chinese. Use the following key namin
 - title_en / title_zh
 - whats_new_en / whats_new_zh
 - why_it_matters_en / why_it_matters_zh
+- impact_for_us_en / impact_for_us_zh
+- next_actions_en / next_actions_zh
 - key_details_en / key_details_zh
 - background_en / background_zh
 - community_discussion_en / community_discussion_zh
@@ -114,15 +116,19 @@ Provide EACH text field in BOTH English and Chinese. Use the following key namin
 Field definitions:
 0. **title** (one short phrase, ≤15 words): A clear, accurate headline for the news item.
 
-1. **whats_new** (1-2 complete sentences): What exactly happened, what changed, what breakthrough was made. Be specific — mention names, versions, numbers, dates when available.
+1. **whats_new** (本期结论, 1-2 complete sentences): What exactly happened, what changed, what breakthrough was made. Be specific — mention names, versions, numbers, dates when available.
 
-2. **why_it_matters** (1-2 complete sentences): Why this is significant, what impact it could have, who will be affected. Connect to the broader ecosystem or industry trends.
+2. **why_it_matters** (为什么值得关注, 1-2 complete sentences): Why this is significant, what impact it could have on the broader ecosystem or industry trends, who will be affected.
 
-3. **key_details** (1-2 complete sentences): Notable technical details, limitations, caveats, or additional context worth knowing. Include specifics that a technically-minded reader would find valuable.
+3. **impact_for_us** (对我们的影响, 1-2 complete sentences): Concrete implications for a product team building AI-powered tools — especially one interested in AI agents, runtime platforms, AI commercialization, and fashion/design AI competitors. If the news has limited direct relevance, state that honestly.
 
-4. **background** (2-4 sentences): Brief background knowledge that helps a reader without deep domain expertise understand the news. Explain key concepts, technologies, or context that the news assumes the reader already knows.
+4. **next_actions** (后续动作, 1-2 complete sentences): Recommended follow-up actions — what to evaluate, prototype, adopt, monitor, or investigate. Make it actionable, not generic.
 
-5. **community_discussion** (1-3 sentences): If community comments are provided, summarize the overall sentiment and key viewpoints from the discussion — agreements, disagreements, concerns, additional insights, or notable counterarguments. If no comments are provided, return an empty string.
+5. **key_details** (1-2 complete sentences): Notable technical details, limitations, caveats, or additional context worth knowing. Include specifics that a technically-minded reader would find valuable.
+
+6. **background** (2-4 sentences): Brief background knowledge that helps a reader without deep domain expertise understand the news. Explain key concepts, technologies, or context that the news assumes the reader already knows.
+
+7. **community_discussion** (1-3 sentences): If community comments are provided, summarize the overall sentiment and key viewpoints from the discussion — agreements, disagreements, concerns, additional insights, or notable counterarguments. If no comments are provided, return an empty string.
 
 **CRITICAL — Language rules (MUST follow):**
 - All *_en fields MUST be written in English.
@@ -162,6 +168,10 @@ Respond with valid JSON only. Each _en field must be in English; each _zh field 
   "whats_new_zh": "<用中文写1-2句话>",
   "why_it_matters_en": "<1-2 sentences in English>",
   "why_it_matters_zh": "<用中文写1-2句话>",
+  "impact_for_us_en": "<1-2 sentences in English>",
+  "impact_for_us_zh": "<用中文写1-2句话>",
+  "next_actions_en": "<1-2 sentences in English>",
+  "next_actions_zh": "<用中文写1-2句话>",
   "key_details_en": "<1-2 sentences in English>",
   "key_details_zh": "<用中文写1-2句话>",
   "background_en": "<2-4 sentences in English, or empty string>",

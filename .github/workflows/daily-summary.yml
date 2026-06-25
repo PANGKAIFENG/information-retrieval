@@ -1,16 +1,16 @@
 name: Daily Horizon Summary
 
 on:
-  # schedule:
-  #   - cron: '0 0 */2 * *'  # Runs every 2 days at 00:00 UTC
-  #     timezone: 'Asia/Shanghai'
+  schedule:
+    # UTC 01:00 = Beijing time 09:00, runs every day
+    - cron: '0 1 * * *'
   workflow_dispatch:      # Allow manual trigger
 
 jobs:
   daily-summary:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Needed to commit changes
+      contents: write  # Needed to commit archive + deploy pages
 
     steps:
       - name: Checkout code
@@ -32,13 +32,28 @@ jobs:
 
       - name: Run Horizon
         env:
-          # Map secrets to environment variables expected by config.json
-          # Modify these based on your data/config.github.json provider settings
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          LWN_KEY: ${{ secrets.LWN_KEY }}
-        run: uv run horizon --hours 48
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: uv run horizon --hours 24
+
+      - name: Archive summary to outputs/summaries
+        run: |
+          mkdir -p outputs/summaries
+          DATE=$(date -u +'%Y-%m-%d')
+          if [ -d docs/summaries ]; then
+            cp docs/summaries/*.md outputs/summaries/ 2>/dev/null || true
+          fi
+          # Also copy the latest generated markdown if present
+          find docs -name '*.md' -newer data/config.json -exec cp {} outputs/summaries/ \; 2>/dev/null || true
+
+      - name: Commit archive
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add outputs/summaries/*.md 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "chore: archive daily summary $(date -u +'%Y-%m-%d')"
+          git push || true
 
       - name: Set current date as environment variable
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV

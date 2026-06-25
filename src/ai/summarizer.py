@@ -25,6 +25,10 @@ LABELS = {
         "discussion": "Discussion",
         "references": "References",
         "tags": "Tags",
+        "whats_new_label": "Conclusion",
+        "why_it_matters_label": "Why It Matters",
+        "impact_for_us_label": "Impact For Us",
+        "next_actions_label": "Next Actions",
         "selected_items": "From {total} items, {selected} important content pieces were selected",
         "empty_analyzed": "Analyzed {total} items, but none met the importance threshold.",
         "empty_body": (
@@ -39,12 +43,16 @@ LABELS = {
         ),
     },
     "zh": {
-        "header": "Horizon 每日速递",
+        "header": "AI 产品情报雷达",
         "source": "来源",
         "background": "背景",
         "discussion": "社区讨论",
         "references": "参考链接",
         "tags": "标签",
+        "whats_new_label": "本期结论",
+        "why_it_matters_label": "为什么值得关注",
+        "impact_for_us_label": "对我们的影响",
+        "next_actions_label": "后续动作",
         "selected_items": "从 {total} 条内容中筛选出 {selected} 条重要资讯。",
         "empty_analyzed": "已分析 {total} 条内容，但没有达到重要性阈值的条目。",
         "empty_body": (
@@ -161,7 +169,12 @@ class DailySummarizer:
         return prefix + self._format_item(item, labels, language, index).rstrip("-\n ")
 
     def _format_item(self, item: ContentItem, labels: dict, language: str, index: int) -> str:
-        """Format a single ContentItem into Markdown."""
+        """Format a single ContentItem into Markdown.
+
+        Renders the four required sections (本期结论 / 为什么值得关注 / 对我们的影响 / 后续动作)
+        as distinct labeled blocks when structured enrichment data is available,
+        falling back to the merged detailed_summary otherwise.
+        """
         _title = item.metadata.get(f"title_{language}") or item.title
         title = str(_title).replace("[", "(").replace("]", ")")
         url = str(item.url)
@@ -181,11 +194,21 @@ class DailySummarizer:
             or ""
         )
 
+        # Structured 4-section fields (preferred rendering when enrichment ran)
+        whats_new = meta.get(f"whats_new_{language}") or ""
+        why_it_matters = meta.get(f"why_it_matters_{language}") or ""
+        impact_for_us = meta.get(f"impact_for_us_{language}") or ""
+        next_actions = meta.get(f"next_actions_{language}") or ""
+
         if language == "zh":
             title = _pangu(title)
             summary = _pangu(summary)
             background = _pangu(background)
             discussion = _pangu(discussion)
+            whats_new = _pangu(whats_new)
+            why_it_matters = _pangu(why_it_matters)
+            impact_for_us = _pangu(impact_for_us)
+            next_actions = _pangu(next_actions)
 
         # Source line with parts joined by " · ", link appended at end
         source_type = item.source_type.value
@@ -217,14 +240,32 @@ class DailySummarizer:
             f'<a id="item-{index}"></a>',
             f"## [{title}]({url}) \u2b50\ufe0f {score}/10",  # ⭐️
             "",
-            summary,
-            "",
             source_line,
+            "",
         ]
 
-        if background:
+        # Prefer structured 4-section rendering; fall back to merged summary.
+        has_structured = any([whats_new, why_it_matters, impact_for_us, next_actions])
+        if has_structured:
+            if whats_new:
+                lines.append(f"**{labels['whats_new_label']}**: {whats_new}")
+                lines.append("")
+            if why_it_matters:
+                lines.append(f"**{labels['why_it_matters_label']}**: {why_it_matters}")
+                lines.append("")
+            if impact_for_us:
+                lines.append(f"**{labels['impact_for_us_label']}**: {impact_for_us}")
+                lines.append("")
+            if next_actions:
+                lines.append(f"**{labels['next_actions_label']}**: {next_actions}")
+                lines.append("")
+        elif summary:
+            lines.append(summary)
             lines.append("")
+
+        if background:
             lines.append(f"**{labels['background']}**: {background}")
+            lines.append("")
 
         sources = meta.get("sources") or []
         if sources:
