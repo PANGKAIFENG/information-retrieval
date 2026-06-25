@@ -2,13 +2,13 @@
   "version": "1.0",
   "ai": {
     "provider": "openai",
-    "model": "gpt-4",
+    "model": "gpt-4o-mini",
     "api_key_env": "OPENAI_API_KEY",
     "temperature": 0.3,
     "max_tokens": 4096,
     "throttle_sec": 0,
-    "analysis_concurrency": 1,
-    "enrichment_concurrency": 1
+    "analysis_concurrency": 2,
+    "enrichment_concurrency": 2
   },
   "email": {
     "enabled": false,
@@ -17,115 +17,190 @@
     "imap_server": "imap.qq.com",
     "imap_port": 993,
     "email_address": "xxx@qq.com",
-    "sender_name": "Horizon Daily",
+    "sender_name": "AI 产品情报雷达",
     "subscribe_keyword": "SUBSCRIBE",
     "unsubscribe_keyword": "UNSUBSCRIBE"
   },
   "sources": {
     "github": [
       {
-        "type": "user_events",
-        "username": "torvalds",
+        "type": "repo_releases",
+        "owner": "openai",
+        "repo": "openai-agents-python",
         "enabled": true
       },
       {
         "type": "repo_releases",
-        "owner": "astral-sh",
-        "repo": "uv",
+        "owner": "modelcontextprotocol",
+        "repo": "python-sdk",
+        "enabled": true
+      },
+      {
+        "type": "repo_releases",
+        "owner": "browserbase",
+        "repo": "stagehand",
+        "enabled": true
+      },
+      {
+        "type": "repo_releases",
+        "owner": "langchain-ai",
+        "repo": "langchain",
+        "enabled": true
+      },
+      {
+        "type": "repo_releases",
+        "owner": "vercel",
+        "repo": "ai",
+        "enabled": true
+      },
+      {
+        "type": "repo_releases",
+        "owner": "continuedev",
+        "repo": "continue",
+        "enabled": true
+      },
+      {
+        "type": "repo_releases",
+        "owner": "cline",
+        "repo": "cline",
+        "enabled": true
+      },
+      {
+        "type": "repo_releases",
+        "owner": "All-Hands-AI",
+        "repo": "OpenHands",
         "enabled": true
       }
     ],
     "hackernews": {
       "enabled": true,
-      "fetch_top_stories": 20,
-      "min_score": 100
+      "fetch_top_stories": 25,
+      "min_score": 150
     },
     "rss": [
+      {
+        "name": "OpenAI News",
+        "url": "https://openai.com/news/rss.xml",
+        "enabled": true,
+        "category": "ai-commercialization"
+      },
+      {
+        "name": "LangChain Blog",
+        "url": "https://blog.langchain.dev/rss/",
+        "enabled": true,
+        "category": "agent-runtime"
+      },
+      {
+        "name": "Latent Space",
+        "url": "https://www.latent.space/feed",
+        "enabled": true,
+        "category": "ai-commercialization"
+      },
       {
         "name": "Simon Willison",
         "url": "https://simonwillison.net/atom/everything/",
         "enabled": true,
-        "category": "ai-tools"
+        "category": "open-source-tools"
       },
       {
-        "name": "LWN.net (subscriber full-text)",
-        "url": "https://lwn.net/headlines/full_text?key=${LWN_KEY}",
-        "enabled": false,
-        "category": "linux"
+        "name": "O'Reilly Radar",
+        "url": "https://www.oreilly.com/radar/feed/",
+        "enabled": true,
+        "category": "ai-commercialization"
+      },
+      {
+        "name": "Replicate Blog",
+        "url": "https://replicate.com/blog/rss.xml",
+        "enabled": true,
+        "category": "ai-commercialization"
+      },
+      {
+        "name": "Stability AI News",
+        "url": "https://stability.ai/news/feed",
+        "enabled": true,
+        "category": "fashion-design-ai"
+      },
+      {
+        "name": "Business of Fashion",
+        "url": "https://www.businessoffashion.com/feed",
+        "enabled": true,
+        "category": "fashion-design-ai"
+      },
+      {
+        "name": "The Interline",
+        "url": "https://the-interline.com/feed/",
+        "enabled": true,
+        "category": "fashion-design-ai"
+      },
+      {
+        "name": "Fashion Dive",
+        "url": "https://www.fashiondive.com/feeds/news.xml",
+        "enabled": true,
+        "category": "fashion-design-ai"
+      },
+      {
+        "name": "Heuritech",
+        "url": "https://www.heuritech.com/feed/",
+        "enabled": true,
+        "category": "fashion-design-ai"
       }
     ],
     "reddit": {
-      "enabled": true,
-      "subreddits": [
-        {
-          "subreddit": "MachineLearning",
-          "enabled": true,
-          "sort": "hot",
-          "time_filter": "day",
-          "fetch_limit": 15,
-          "min_score": 50
-        }
-      ],
-      "users": [
-        {
-          "username": "iamthatis",
-          "enabled": true,
-          "sort": "new",
-          "fetch_limit": 10
-        }
-      ],
-      "fetch_comments": 5
+      "enabled": false,
+      "subreddits": [],
+      "users": [],
+      "fetch_comments": 0
     },
     "twitter": {
       "enabled": false,
-      "users": ["karpathy", "ylecun"],
-      "fetch_limit": 10,
+      "users": [],
+      "fetch_limit": 0,
       "fetch_reply_text": false,
-      "max_replies_per_tweet": 3,
-      "max_tweets_to_expand": 10,
-      "reply_min_likes": 5
+      "max_replies_per_tweet": 0,
+      "max_tweets_to_expand": 0,
+      "reply_min_likes": 0
     },
     "openbb": {
-      "enabled": false,
-      "fetch_filings": false,
-      "filings_provider": "sec",
-      "watchlists": [
-        {
-          "name": "megacaps",
-          "enabled": true,
-          "provider": "yfinance",
-          "fetch_limit": 20,
-          "category": "equities",
-          "symbols": ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA"]
-        }
-      ]
+      "enabled": false
     },
     "ossinsight": {
-      "enabled": false,
-      "period": "past_24_hours",
-      "languages": ["All", "Python", "TypeScript"],
-      "keywords": [],
-      "min_stars": 10,
-      "max_items": 30
+      "enabled": false
     }
   },
   "filtering": {
     "ai_score_threshold": 6.0,
     "time_window_hours": 24,
-    "max_items": null,
-    "category_groups": {},
+    "max_items": 15,
+    "category_groups": {
+      "agent-runtime": {
+        "label": "Agent / Runtime",
+        "limit": 5
+      },
+      "ai-commercialization": {
+        "label": "AI 产品商业化",
+        "limit": 5
+      },
+      "fashion-design-ai": {
+        "label": "服装 / 设计 AI 竞品",
+        "limit": 3
+      },
+      "open-source-tools": {
+        "label": "开源工具",
+        "limit": 4
+      }
+    },
     "default_group": "other",
-    "default_group_limit": null
+    "default_group_limit": 3
   },
   "webhook": {
-    "enabled": false,
-    "url_env": "HORIZON_WEBHOOK_URL",
+    "enabled": true,
+    "url_env": "FEISHU_WEBHOOK_URL",
     "delivery": "summary",
     "overview_position": "first",
-    "platform": "generic",
-    "layout": "markdown",
+    "platform": "feishu",
+    "layout": "collapsible",
     "fallback_layout": "markdown",
-    "languages": null,
+    "languages": ["zh"],
     "request_body": {
       "msg_type": "interactive",
       "card": {
@@ -144,7 +219,7 @@
           "elements": [
             {
               "tag": "markdown",
-              "content": "Horizon生成结果: #{result}\nHorizon日报重要资讯数量: #{important_items}/#{all_items}"
+              "content": "AI 产品情报雷达: #{result}\n重要资讯数量: #{important_items}/#{all_items}"
             },
             {
               "tag": "hr"

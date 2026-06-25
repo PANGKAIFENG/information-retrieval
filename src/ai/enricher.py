@@ -205,9 +205,18 @@ class ContentEnricher:
                 val = result[f"title_{lang}"]
                 item.metadata[f"title_{lang}"] = val.get("text") or str(val) if isinstance(val, dict) else str(val)
 
+            # Store individual structured fields so the summarizer can render
+            # them as distinct sections (本期结论 / 为什么值得关注 / 对我们的影响 / 后续动作)
+            for field in ("whats_new", "why_it_matters", "impact_for_us", "next_actions", "key_details"):
+                text = result.get(f"{field}_{lang}", "").strip()
+                if text:
+                    if isinstance(text, dict):
+                        text = text.get("text") or str(text)
+                    item.metadata[f"{field}_{lang}"] = text
+
             parts = []
             for field in ("whats_new", "why_it_matters", "key_details"):
-                text = result.get(f"{field}_{lang}", "").strip()
+                text = item.metadata.get(f"{field}_{lang}", "")
                 if text:
                     parts.append(text)
             if parts:
